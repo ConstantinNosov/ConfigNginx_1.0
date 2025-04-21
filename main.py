@@ -6,15 +6,15 @@ def main():
     while True: 
         file_extension = ".conf" 
         file_path = "conf.d/"  
-        hostname = "ahmad.ftc.ru"  
+        hostname = "exemple.com"  
         port = 22                       
         username = "nginx"      
         key_file = r"C:\STORAGE\Key\key" 
-        bname = input("Введи имя конфига, или '0' для выхода:")
-        if bname.lower() == '0':  
+        config_name = input("Введи имя конфига, или '0' для выхода:")
+        if config_name.lower() == '0':  
             break       
-        remote_file_path =  f'{file_path}{bname}{file_extension}'  
-        local_file_path = f'{bname}{file_extension}' 
+        remote_file_path =  f'{file_path}{config_name}{file_extension}'  
+        local_file_path = f'{config_name}{file_extension}' 
         
         # Загрузка файла с сервера
         while True:
@@ -25,40 +25,40 @@ def main():
                 ssh_client.close()
                 break  
             else:
-                bname = input("Файл не найден. Введи имя конфига, или '0' для выхода:")
-                if bname.lower() == '0':
+                config_name = input("Файл не найден. Введи имя конфига, или '0' для выхода:")
+                if config_name.lower() == '0':
                     return  
-                remote_file_path = f'{file_path}{bname}{file_extension}'  
-                local_file_path = f'{bname}{file_extension}' 
+                remote_file_path = f'{file_path}{config_name}{file_extension}'  
+                local_file_path = f'{config_name}{file_extension}' 
                 ssh_client.close()
                 
-        # Новое значение cert
+        # Новое значение 
         while True:    
             try:
-                new_cert = int(input("Введи новый cert 1, 3 или 0 для перезапуска: "))
-                if new_cert == 0:
+                new_meaning = int(input("Введи 1, 3 или 0 для перезапуска: "))
+                if new_meaning == 0:
                     main()
                     return 
-                if new_cert in [1, 3]:
-                    old_cert = 3 if new_cert == 1 else 1
+                if new_meaning in [1, 3]:
+                    old_meaning = 3 if new_meaning == 1 else 1
                     break  
                 else:
                     print("Некорректный ввод. Введи 1, 3 или 0 для перезапуска.")
             except ValueError:
                 print("Некорректный ввод. Введи 1, 3 или 0 для перезапуска.")
                 
-        print(f"Новое значение cert: {new_cert}")
-        in_new_sert = f"proxy_pass https://sbpgs-cert{new_cert}.cbrpay.ru:9443;"
-        in_old_sert = f"proxy_pass https://sbpgs-cert{old_cert}.cbrpay.ru:9443;"
-        print(in_new_sert)
+        print(f"Новое значение: {new_meaning}")
+        in_new_meaning = f"proxy_pass https://exemple{new_meaning}.ru:8800;"
+        in_old_meaning = f"proxy_pass https://exemple{old_meaning}.ru:8800;"
+        print(in_new_meaning)
     
         # Выполняем замену по тексу конфига
         modifier = TextFileModifier(local_file_path)
-        result_modifier = modifier.replace_text(in_old_sert, in_new_sert)
+        result_modifier = modifier.replace_text(in_old_meaning, in_new_meaning)
         if not result_modifier:
             if os.path.exists(local_file_path):
                 os.remove(local_file_path)              
-            print("Замена не была произведена текущие значения cert совпадают с введенным.")
+            print("Замена не была произведена текущие значения совпадают с введенным.")
             continue 
            
         # Выгружаем файл на сервер, с заменой существующего файла
